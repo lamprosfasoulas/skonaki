@@ -1,0 +1,30 @@
+# yay
+# Yet another yogurt. Pacman wrapper and AUR helper written in go.
+
+# present package selection menu
+yay [Search Term]
+
+# print system statistics
+yay -Ps
+
+# print update list
+yay -Pu
+
+# clean unneeded dependencies
+yay -Yc
+
+# downloads PKGBUILD from ABS or AUR
+yay -G
+
+# generates development package
+# DB used for devel updates.
+yay -Y --gendb
+
+# normal update but also check for development package updates
+# and use PKGBUILD modification time and not version to determine update
+yay -Syu --devel --timeupdate
+
+# installation
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si

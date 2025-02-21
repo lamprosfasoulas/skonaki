@@ -1,0 +1,46 @@
+#!/bin/bash
+# green  = "\033[1;32m"
+# blue   = "\033[1;34m"
+# yellow = "\033[33m"
+# red    = "\033[31m"
+# reset  = "\033[0m"
+
+# Ensure an argument is provided
+if [[ -z "$1" ]]; then
+    echo -e "\033[31mUsage:\033[0m $0 <filename>" >&2
+    exit 1
+fi
+
+# Define the search directory
+SEARCH_DIR=$1
+echo $SEARCH_DIR
+echo $2
+
+# Search for the file under /etc/docs
+FILE=$(find "$SEARCH_DIR" -type f -name "$2" 2>/dev/null | head -n 1)
+
+# Check if a file was found
+if [[ -e "$FILE" ]]; then
+    echo -e "\033[1;32mFound file:\033[0m $FILE"
+    echo -e "\033[1;34m-------------------\033[0m"
+    
+    # Display file contents with syntax highlighting if possible
+    if command -v bat >/dev/null 2>&1; then
+        if bat --color=always --paging=never --style=plain -l go "$FILE" 2>/dev/null; then
+            echo
+        else
+            echo "bat"
+
+        fi
+
+    else
+        #cat "$FILE" | sed -e 's/\(^#.\+\)/\033[33m\1\033[0m/'
+        awk '{if ($0 ~ /^#/) print "\033[1;48;5;246;38;5;234m" $0 "\033[0m"; else print "\033[1;0m" $0 "\033[0m"}' "$FILE"
+    fi
+    
+    echo -e "\033[1;34m-------------------\033[0m"
+else
+    echo -e "\033[31mError:\033[0m No file named '$1' found in $SEARCH_DIR" >&2
+    exit 1
+fi
+

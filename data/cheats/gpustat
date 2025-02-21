@@ -1,0 +1,8 @@
+# gpustat
+# A simple command-line script for querying and monitoring GPU status.
+# It is a wrapper for nvidia-smi.
+# To install: `pip install gpustat`
+
+# show GPU statistics with the processes PIDs and names
+gpustat -cp
+

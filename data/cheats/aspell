@@ -1,0 +1,13 @@
+# aspell
+# Interactive spell-checker for use in a terminal
+
+# Spell check a single file.
+aspell check [FILE]
+
+# List misspelled words from standard input (STDIN).
+cat [FILE] | aspell list
+
+# Check for known dictionary files.
+aspell dicts
+# Above appears to be short-form for the below command.
+aspell dump dicts

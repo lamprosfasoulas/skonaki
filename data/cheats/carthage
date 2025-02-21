@@ -1,0 +1,17 @@
+# carthage
+# A dependency management tool for Cocoa applications (Mac OS X)
+
+# Download & build the latest version of all dependencies mentioned in Cartfile
+carthage update
+
+# Update dependencies, but only build for iOS
+carthage update --platform ios
+
+# Update dependencies, but don't build any of them
+carthage update --no-build
+
+# Download & rebuild the current version of dependencies (without updating them)
+carthage bootstrap
+
+# Rebuild a specific dependency:
+carthage build dependency

@@ -1,0 +1,24 @@
+# apk
+# Package management software for use in Alpine Linux
+
+# Install a package, or upgrade an existing one.
+apk add [PKG]
+
+# Remove a package
+apk del [PKG]
+
+# Update index of available packages.
+apk update
+
+# Upgrade all installed packages.
+apk upgrade
+
+# Find package, using glob pattern matching.
+apk search [PKG]
+
+# List all installed packages.
+apk info
+
+# Determine to which package a file belongs, akin to `dpkg -S [PATH]` in
+# Debian- and Ubuntu-based distributions of Linux.
+apk info --who-owns [PATH]

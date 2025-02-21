@@ -1,0 +1,21 @@
+// variable
+// mutable
+var x = 5
+
+// value
+// immutable, evaluated once during compilation
+// GOOD
+val x = 5
+// BAD
+x = 5
+
+// lazy value
+// immutable, evaluated once but only when called
+lazy val x = 5
+
+// definition
+// immutable, evaluated every time it is called
+def x = 5
+
+// explicit type
+val x: Double = 5

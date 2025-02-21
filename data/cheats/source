@@ -1,0 +1,15 @@
+# source
+# Execute commands from a file in the current shell
+
+# This is a shell built-in, available within most if not all shells. However, -
+# it may only be available as `.` in some older shells, such as Bourne shell.
+# Its first argument is a file, with all proceeding arguments being parameters
+# to the aforementioned file.
+
+# Run shell code residing within FILE as though you'd entered it in yourself.
+source FILE
+# The above can be written in short-hand, for the same effect, shell allowing.
+. FILE
+
+#  Source FILE with the given arguments to said file.
+source FILE Argument_1 Argument_2 Argument_3 ...

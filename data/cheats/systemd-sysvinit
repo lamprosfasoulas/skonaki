@@ -1,0 +1,104 @@
+# SysVinit to Systemd Cheat sheet
+
+# Ways in which to control an available service.
+#
+# SysVinit:
+service SERVICE [start/stop/restart/reload/condrestart/status]
+# SystemD:
+systemctl [start/stop/restart/reload/condrestart/status] SERVICE
+
+# List services which can be started or stopped.
+#
+# SysVinit:
+ls /etc/rc.d/init.d/
+# SystemD Methods (one per line):
+systemctl
+systemctl list-unit-files --type=service
+ls /lib/systemd/system/*.service /etc/systemd/system/*.service
+
+# Enable or disable a service from running; noticeable at next boot.
+#
+# SysVinit:
+chkconfig SERVICE [on/off]
+# SystemD:
+systemctl [enable/disable] SERVICE
+
+# Check whether a service is enabled or disabled; see above.
+#
+# SysVinit:
+chkconfig SERVICE
+# SystemD:
+systemctl is-enabled SERVICE
+
+# Print a table of services, listing for which run level each is configured.
+#
+# SysVinit:
+chkconfig --list
+# SystemD Methods (one per line):
+systemctl list-unit-files --type=service
+ls /etc/systemd/system/*.wants/
+
+# Print a table of services which will be started when booting into the GUI.
+#
+# SysVinit:
+chkconfig --list | grep 5:on
+# SystemD:
+systemctl list-dependencies graphical.target
+
+# Used to list which levels a service is configured; on or off.
+#
+# SysVinit:
+chkconfig SERVICE --list
+# SystemD:
+ls /etc/systemd/system/*.wants/SERVICE.service
+
+# Used when you create a new service file or modify any configurations.
+#
+# SysVinit:
+chkconfig SERVICE --add
+# SystemD:
+systemctl daemon-reload
+
+# Run level/Target -- Half the system.
+#
+# SysVinit Run level:        0
+# SystemD Target:           runlevel0.target
+#                           poweroff.target
+#
+# Single-user mode.
+#
+# SysVinit Runlevel:        1, s, single
+# SystemD Target:           runlevel1.target
+#                           rescue.target
+#
+# User-defined/Site-specific run levels. By default, identical to 3.
+#
+# SysVinit Runlevel:        2, 4
+# SystemD Target:           runlevel2.target
+#                           runlevel2.target
+#                           multi-user.target
+#
+# Multi-user. Non-graphical. Users can usually login via multiple consoles or
+# via the network.
+#
+# SysVinit Runlevel:        3
+# SystemD Target:           runlevel3.target
+#                           multi-user.target
+#
+# Multi-user. Graphical. Usually has all the services of runlevel 3 plus a
+# graphical login.
+#
+# SysVinit Runlevel:        5
+# SystemD Target:           runlevel5.target
+#                           graphical.target
+#
+# Reboot.
+#
+# SysVinit Runlevel:        6
+# SystemD Target:           runlevel6.target
+#                           reboot.target
+#
+# Emergency shell.
+#
+# SysVinit Runlevel:        emergency
+# SystemD Target:           emergency.target

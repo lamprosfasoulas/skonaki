@@ -1,0 +1,13 @@
+# lynx
+# Classic non-graphical (CLI) web browser
+
+# Dump [URL]; do not show link URLs.
+lynx -dump -nolist [URL]
+
+# Creating your keystroke file for use with lynx(1).
+lynx -cmd_log [FILE]
+# Use above keystroke file to run repeating website actions.
+lynx -accept_all_cookies -cmd_script=[FILE]
+
+# Convert HTML from STDIN to text, then dump it to STDOUT.
+lynx -force_html -stdin -dump -nolist

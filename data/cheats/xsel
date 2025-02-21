@@ -1,0 +1,20 @@
+# xsel
+# Command-line tool to access X clipboard and selection buffers
+
+# Read from STDIN and save it to the clipboard; as if `Ctrl + C`.
+echo 123 | xsel -ib
+# A file's contents can also be provided to xsel(1x) via STDIN.
+cat file | xsel -ib
+
+# Send the clipboard's contents to STDOUT; as if `Ctrl + V`.
+xsel -ob
+# The contents of the clipboard can be saved to a file(s). Note that the use of
+# `>` means that any existing file by the same name will be overwritten. Use
+# `>>` to instead append the data to that file.
+xsel -ob > file
+
+# Clear the clipboard.
+xsel -cb
+
+# Send X11 primary selection to STDOUT, as if clicking mouse's middle button.
+xsel -op

@@ -1,0 +1,5 @@
+# movies (Bash-Snippets)
+# Provides relevant information about a certain movie.
+
+# Search for information on a specific movie
+movies Inception

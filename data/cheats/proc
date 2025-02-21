@@ -1,0 +1,16 @@
+# /proc is a pseudo-filesystem containing running process information and more.
+
+# See the command line arguments that started the process
+cat /proc/<pid>/cmdline
+
+# See the process's environment variables
+cat /proc/<pid>/environ
+
+# See the process's status and usage information, such as CPU and memory
+cat /proc/<pid>/status
+
+# See every file the process has open
+ls -l /proc/<pid>/fd
+
+# Display some useful memory statistics, often used by programs like htop(1).
+cat /proc/meminfo

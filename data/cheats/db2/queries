@@ -1,0 +1,32 @@
+--Put a lock at table level
+LOCK TABLE tbl1 IN EXCLUSIVE MODE
+
+--Execute a query without regard of commit rows
+SELECT * FROM tbl1 WITH UR --RR,RS,CS
+
+--Execute a query with only 5 rows
+SELECT * FROM tbl1 FETCH FIRST 5 ROWS ONLY
+
+--Perform a query to a dummy table (dual)
+SELECT 'Any string' FROM SYSIBM.SYSDUMMY1
+
+--Perform a query calling a function
+SELECT HEX(col2) FROM tbl5
+
+--Call a function
+VALUES HEX('AnyText')
+
+--Perform a cast
+VALUES CAST('123' AS INTEGER)
+
+--Concatenate
+VALUES 'AnyText' || 5
+VALUES 'AnyText' concat 5
+
+--Escape a single quote in a text field
+VALUES 'Sinead o''Connor'
+
+--Query the database catalog
+SELECT * FROM SYSCAT.TABLES
+SELECT * FROM SYSCAT.TABAUTH
+SELECT * FROM SYSCAT.ROUTINES

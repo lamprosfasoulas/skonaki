@@ -1,0 +1,27 @@
+# Python is a high-level programming language
+# and python is a Python interpreter.
+
+# Basic example of server with python
+# Will start a Web Server in the current directory on port 8000
+# go to http://127.0.0.1:8000
+#
+# Python v2.7
+python -m SimpleHTTPServer
+# Python 3
+python -m http.server 8000
+
+# SMTP-Server for debugging, messages will be discarded, and printed on STDOUT.
+python -m smtpd -n -c DebuggingServer localhost:1025
+
+# Pretty print a JSON
+python -m json.tool
+
+# Zen of Python
+# or just 'import this' in python
+python -m this
+
+# See also:
+#   Python language cheat sheets at /python/
+#   list of pages:      /python/:list
+#   learn python:       /python/:learn
+#   search in pages:    /python/~keyword

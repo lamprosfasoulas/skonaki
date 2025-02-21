@@ -1,0 +1,11 @@
+# libreoffice
+# Office productivity suite
+
+# Convert documents to PDF.
+libreoffice --headless --convert-to pdf *.pptx
+
+# Save PDFs to a different directory?
+libreoffice --headless --convert-to pdf *.docx --outdir ~/docs/
+
+# Convert files nested inside folders? Uses sharkdp/fd, IE: find(1) & xargs(1).
+fd -e doc -e docx -x libreoffice --headless --convert-to pdf --outdir {//} {}
