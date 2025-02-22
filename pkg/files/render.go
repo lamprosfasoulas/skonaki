@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 const ROOT = "data"
-var DIRS = []string{"cheats", "sheets", "also"}
+var DIRS []string//{"cheats", "sheets", "also"}
 const prefix = "_"
 
-func runBat(f, lang string) ([]byte, error) {
+func RunBat(f, lang string) ([]byte, error) {
     cmd := exec.Command("bat","--color=always","--paging=never","--style=plain",
         "-l", lang,f)
     output, err := cmd.CombinedOutput()
@@ -21,45 +22,55 @@ func runBat(f, lang string) ([]byte, error) {
     return output,nil
 }
 func GetHTML(c []byte) []byte {
-    aha := exec.Command("aha","--black")
+    aha := exec.Command("aha","--black","-n","-t","Skonaki")
     aha.Stdin = bytes.NewReader(c)
-    var out bytes.Buffer
 
-    aha.Stdout = &out
+    var ahaOut bytes.Buffer
+
+    aha.Stdout = &ahaOut
 
     if err:= aha.Run(); err == nil{
-        return []byte(out.String())
+        return []byte(ahaOut.String())
     }
     return []byte{}
-
+}
+func GetList() []byte {
+    cmd := exec.Command("ls","-R","data")
+    if dirs, err := cmd.CombinedOutput(); err == nil{
+        DIRS = strings.Fields(string(dirs))
+    }
+    return []byte(fmt.Sprintf("%v\n",strings.Join(DIRS,"\n")))
 }
 
 func GetContent(path []string) []byte{
     var lang string //used for bat syntax highlighting
     var content string 
-    // cmd := exec.Command("bash","-c","gls","-d","data/*")
-    // if out, err := cmd.CombinedOutput(); err == nil{
-    //     DIRS = strings.Fields(string(out))
-    // }
-    fmt.Println(DIRS)
-    fmt.Println(path)
+    var showDir string
+    // Here we get the directories under data
+    cmd := exec.Command("ls","data")
+    if dirs, err := cmd.CombinedOutput(); err == nil{
+        DIRS = strings.Fields(string(dirs))
+    }
+
     switch len(path){
     case 1:
         lang = "bash"
+        showDir = path[0]
     case 2:
         lang = path[0]
+        showDir = path[0]
         path[0] = "_" + path[0]
     }
     for _,dir := range DIRS{
+        //filePath := filepath.Join(ROOT,strings.Split(dir,".")[1],filepath.Join(path...))
         filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
-        if output, err := runBat(filePath,lang); err == nil{
-            fmt.Println(filePath)
-            content += (fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",dir,path[0]))
+        if output, err := RunBat(filePath,lang); err == nil{
+            content += fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
             content += string(output)
         }
     }
     if content == ""{
-        content = "No command provided\n"
+        return GetContent([]string{"404"})
     }
     return []byte(content)
 }

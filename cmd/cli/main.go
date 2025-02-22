@@ -12,7 +12,7 @@ import (
 func main(){
     args := os.Args
     fmt.Println(string(files.GetContent(args[1:])))
-    cmd := exec.Command("bash","-c","ls","-d","*/")
+    cmd := exec.Command("ls","data")
     output, _:= cmd.CombinedOutput()
     fmt.Println(strings.Fields(string(output)))
 }
