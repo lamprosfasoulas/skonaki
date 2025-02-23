@@ -3,9 +3,12 @@ package files
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/lamprosfasoulas/docs/pkg/cache"
 )
 
 const ROOT = "data"
@@ -51,6 +54,9 @@ func GetContent(path []string) []byte{
     if dirs, err := cmd.CombinedOutput(); err == nil{
         DIRS = strings.Fields(string(dirs))
     }
+    if path[0] == "" {
+        path[0] = "home"
+    }
 
     switch len(path){
     case 1:
@@ -61,17 +67,32 @@ func GetContent(path []string) []byte{
         showDir = path[0]
         path[0] = "_" + path[0]
     }
+    key := filepath.Join(path...)
+    if c, e := cache.GetCont(key); e == nil && c != nil{
+        log.Printf("Getting key: %v from Cache",key)
+        return c
+    }
+    //start := time.Now()
     for _,dir := range DIRS{
         //filePath := filepath.Join(ROOT,strings.Split(dir,".")[1],filepath.Join(path...))
         filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
-        if output, err := RunBat(filePath,lang); err == nil{
-            content += fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
-            content += string(output)
-        }
+        //if c, e := cache.GetCont(filePath); e == nil && c != nil{
+        //    fmt.Println("found in cache",filePath,e)
+        //    content += string(c)
+        //}else{
+            if output, err := RunBat(filePath,lang); err == nil {
+                tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
+                tempC += string(output)
+                //log.Printf("Failed to set cache: %v",cache.SetCont(filePath,[]byte(tempC)))
+                content += tempC
+            }
+        //}
     }
+    //log.Printf("\nTime for loop %v\n ----------",time.Since(start))
     if content == ""{
         return GetContent([]string{"404"})
     }
+    cache.SetCont(key, []byte(content))
     return []byte(content)
 }
 

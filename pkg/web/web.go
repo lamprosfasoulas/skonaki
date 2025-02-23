@@ -1,10 +1,12 @@
 package web
 
 import (
-	"fmt"
+	"bytes"
 	"html/template"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/lamprosfasoulas/docs/pkg/files"
 )
@@ -18,35 +20,33 @@ func isTerminal(userAgent string) bool{
     return false
 }
 
-func HandleFunc(w http.ResponseWriter, r *http.Request){
+func returnResponse(r *http.Request) ([]byte, string) {
     if isTerminal(r.Header.Get("User-Agent")) {
-        path := strings.Split(strings.TrimPrefix(r.URL.Path,"/"), "/")
-        if path[0] == "" {
-            //landing page
-            path[0] = "home"
-        }
-        if path[0] == ":list" {
-            fmt.Println("command")
-            w.Write(files.GetList())
-            return
-        }
-        outBat := files.GetContent(path)
         //return for terminal
-        w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-        w.Write(outBat)
+        path := strings.Split(strings.TrimPrefix(r.URL.Path,"/"), "/")
+        start := time.Now()
+        response := files.GetContent(path)
+        log.Printf("Terminal request %v with response time: %v\n",path,time.Since(start))
+        //w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+        return response, "text/plain; charset=utf-8"
     }else{
-        path := strings.Split(r.URL.Query().Get("path"),"/")
-        if path[0] == "" {
-            //landing page
-            path[0] = "home"
-        }
-        outBat := files.GetContent(path)
         //return for browsers
-        w.Header().Set("Content-Type", "text/html; charset=utf-8")
+        path := strings.Split(r.URL.Query().Get("path"),"/")
+        if r.URL.Query().Get("path") == "" {
+            path = strings.Split(strings.TrimPrefix(r.URL.Path,"/"), "/")
+        }
+        start := time.Now()
+        outBat := files.GetContent(path)
+        var response bytes.Buffer
         tmpl, _ := template.ParseFiles("html/index.html")
-        tmpl.Execute(w,template.HTML(files.GetHTML(outBat)))
-        //w.Write(files.GetHTML(outBat))
+        tmpl.Execute(&response,template.HTML(files.GetHTML(outBat)))
+        log.Printf("HTML request %v  with response time: %v\n",path,time.Since(start))
+        return response.Bytes(), "text/html; charset=utf-8"
     }
-    fmt.Print()
-     
+}
+
+func HandleFunc(w http.ResponseWriter, r *http.Request){
+    c, t := returnResponse(r)
+    w.Header().Set("Content-Type", t)//"text/html; charset=utf-8"
+    w.Write(c)
 }
