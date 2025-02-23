@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    container_name: skon
+    ports:
+      - "42069:42069"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_ADDR=redis_db:6379
+      - REDIS_PASSWD
+      - REDIS_DB=0
+    volumes:
+      - ./sample:/app/data/11.sample
+    restart: unless-stopped
+
+  redis:
+    image: "redis:alpine"
+    container_name: redis_db
+    restart: unless-stopped
