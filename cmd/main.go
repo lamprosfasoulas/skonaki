@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os/exec"
+	"strings"
 
 	"github.com/lamprosfasoulas/skonaki/pkg/cache"
+	"github.com/lamprosfasoulas/skonaki/pkg/files"
 	"github.com/lamprosfasoulas/skonaki/pkg/web"
 )
 
@@ -13,6 +16,10 @@ import (
 func main() {
     // Initialise the redis cache
     cache.InitRedis()
+    cmd := exec.Command("ls","data")
+    if dirs, err := cmd.CombinedOutput(); err == nil{
+        files.DIRS = strings.Fields(string(dirs))
+    }
 
     // Init the web server
 	http.HandleFunc("/", web.HandleFunc)

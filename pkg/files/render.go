@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/fs"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -30,54 +31,52 @@ var lange = []string{
 }
 
 
-func RunBat(f, lang string) ([]byte, error) {
+//func RunBat(f, lang string) ([]byte, error) {
+//    cmd := exec.Command("bat","--color=always","--paging=never","--style=plain",
+//        "-l", lang,f)
+//    output, err := cmd.CombinedOutput()
+//    if err != nil {
+//        return []byte{},err
+//    }
+//    return output,nil
+//}
+func RunBat(f *[]byte, lang string) []byte {
     cmd := exec.Command("bat","--color=always","--paging=never","--style=plain",
-        "-l", lang,f)
+        "-l", lang)
+    cmd.Stdin = bytes.NewReader(*f)
     output, err := cmd.CombinedOutput()
     if err != nil {
-        return []byte{},err
+        return []byte{}
     }
-    return output,nil
+    return output
 }
-func GetHTML(c []byte) []byte {
+func GetHTML(c *[]byte) []byte {
     aha := exec.Command("aha","--black","-n","-l","-t","Skonaki")
-    aha.Stdin = bytes.NewReader(c)
+    aha.Stdin = bytes.NewReader(*c)
 
-    var ahaOut bytes.Buffer
+    //var ahaOut bytes.Buffer
 
-    aha.Stdout = &ahaOut
+    //aha.Stdout = &ahaOut
 
-    if err:= aha.Run(); err == nil{
-        return []byte(ahaOut.String())
+    if ahaOut, err:= aha.CombinedOutput(); err == nil{
+        return []byte(ahaOut)
     }
     return []byte{}
 }
-func GetList() []byte {
-    cmd := exec.Command("ls","-R","data")
-    if dirs, err := cmd.CombinedOutput(); err == nil{
-        DIRS = strings.Fields(string(dirs))
-    }
-    return []byte(fmt.Sprintf("%v\n",strings.Join(DIRS,"\n")))
-}
-
-//var m  sync.Mutex
 
 func GetContent(path []string) []byte{
     key := filepath.Join(path...)
-    //start := time.Now()
-    //fmt.Println(key)
     if c, e := cache.GetCont(key); e == nil && c != nil{
         log.Printf("Getting key: %v from Cache",key)
-        //inner(path)
         return c
     }else{
         log.Printf("Searching %v ...",path)
         resp := inner(path)
         cache.SetCont(key, resp)
         return resp
-        //return []byte(content)
     }
 }
+
 func inner(path []string) []byte {
     var lang string //used for bat syntax highlighting
     var content string 
@@ -106,34 +105,26 @@ func inner(path []string) []byte {
         showDir = path[0]
         path[0] = "_" + path[0]
     }
-    //m.Lock()
-    // Here we get the directories under data
-    cmd := exec.Command("ls","data")
-    if dirs, err := cmd.CombinedOutput(); err == nil{
-        DIRS = strings.Fields(string(dirs))
-    }
     for _,dir := range DIRS{
-        //filePath := filepath.Join(ROOT,strings.Split(dir,".")[1],filepath.Join(path...))
         filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
-        //if c, e := cache.GetCont(filePath); e == nil && c != nil{
-        //    fmt.Println("found in cache",filePath,e)
-        //    content += string(c)
-        //}else{
-            //fmt.Println("search ",filePath)
-        if output, err := RunBat(filePath,lang);err == nil {
-            //fmt.Println(filePath)
+        if output, err := os.ReadFile(filePath);err == nil {
             tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
-            tempC += string(output)
-            //log.Printf("Failed to set cache: %v",cache.SetCont(filePath,[]byte(tempC)))
+            tempC += string(RunBat(&output,lang))
             content += tempC + "\n"
         }        
-        //}
     }
+//   for _,dir := range DIRS{
+//       filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
+//       if output, err := RunBat(filePath,lang);err == nil {
+//           tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
+//           tempC += string(output)
+//           content += tempC + "\n"
+//       }        
+//   }
     if content == "" {
         return inner([]string{"404"})
     }
     return []byte(content)
-    //m.Unlock()
 }
 
 func list() []byte{

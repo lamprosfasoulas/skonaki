@@ -39,7 +39,7 @@ func returnResponse(r *http.Request) ([]byte, string) {
         outBat := files.GetContent(path)
         var response bytes.Buffer
         tmpl, _ := template.ParseFiles("html/index.html")
-        tmpl.Execute(&response,template.HTML(files.GetHTML(outBat)))
+        tmpl.Execute(&response,template.HTML(files.GetHTML(&outBat)))
         log.Printf("HTML request %v  with response time: %v\n",path,time.Since(start))
         return response.Bytes(), "text/html; charset=utf-8"
     }
