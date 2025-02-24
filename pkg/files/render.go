@@ -65,13 +65,13 @@ func GetList() []byte {
 func GetContent(path []string) []byte{
     key := filepath.Join(path...)
     //start := time.Now()
-    fmt.Println(key)
+    //fmt.Println(key)
     if c, e := cache.GetCont(key); e == nil && c != nil{
         log.Printf("Getting key: %v from Cache",key)
         //inner(path)
         return c
     }else{
-        fmt.Println("running search")
+        log.Printf("Searching %v ...",path)
         resp := inner(path)
         cache.SetCont(key, resp)
         return resp
@@ -119,12 +119,13 @@ func inner(path []string) []byte {
         //    fmt.Println("found in cache",filePath,e)
         //    content += string(c)
         //}else{
-        fmt.Println(filePath)
+            //fmt.Println("search ",filePath)
         if output, err := RunBat(filePath,lang);err == nil {
+            //fmt.Println(filePath)
             tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
             tempC += string(output)
             //log.Printf("Failed to set cache: %v",cache.SetCont(filePath,[]byte(tempC)))
-            content = tempC + "\n"
+            content += tempC + "\n"
         }        
         //}
     }
