@@ -5,7 +5,7 @@ on:
     types: [published]
 
 env:
-  REGISTRY_IMAGE: demo_images/skonaki
+  REGISTRY_IMAGE: demo-images/skonaki
 
 jobs:
   build-and-push-release:
