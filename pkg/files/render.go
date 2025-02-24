@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/lamprosfasoulas/docs/pkg/cache"
 )
@@ -46,6 +45,8 @@ func GetList() []byte {
     return []byte(fmt.Sprintf("%v\n",strings.Join(DIRS,"\n")))
 }
 
+//var m  sync.Mutex
+
 func GetContent(path []string) []byte{
     var lang string //used for bat syntax highlighting
     var content string 
@@ -67,14 +68,13 @@ func GetContent(path []string) []byte{
     key := filepath.Join(path...)
     //start := time.Now()
     inner := func() {
+        //m.Lock()
         // Here we get the directories under data
         cmd := exec.Command("ls","data")
         if dirs, err := cmd.CombinedOutput(); err == nil{
             DIRS = strings.Fields(string(dirs))
         }
-        wg := sync.WaitGroup{}
         for _,dir := range DIRS{
-            wg.Add(1)
             //filePath := filepath.Join(ROOT,strings.Split(dir,".")[1],filepath.Join(path...))
             filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
             //if c, e := cache.GetCont(filePath); e == nil && c != nil{
@@ -88,17 +88,17 @@ func GetContent(path []string) []byte{
                 content += tempC
             }
             //}
-            wg.Done()
-    }
-    //log.Printf("\nTime for loop %v\n ----------",time.Since(start))
-    if content == ""{
-        GetContent([]string{"404"})
-    }
-    cache.SetCont(key, []byte(content))
+        }
+        //log.Printf("\nTime for loop %v\n ----------",time.Since(start))
+        if content == ""{
+            GetContent([]string{"404"})
+        }
+        cache.SetCont(key, []byte(content))
+        //m.Unlock()
     }
     if c, e := cache.GetCont(key); e == nil && c != nil{
         log.Printf("Getting key: %v from Cache",key)
-        //go inner()
+        inner()
         return c
     }else{
         inner()
