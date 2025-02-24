@@ -1,4 +1,4 @@
-module github.com/lamprosfasoulas/docs
+module github.com/lamprosfasoulas/skonaki
 
 go 1.24.0
 
