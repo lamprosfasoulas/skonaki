@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/lamprosfasoulas/docs/pkg/files"
+	"github.com/lamprosfasoulas/skonaki/pkg/files"
 )
 
 func main(){

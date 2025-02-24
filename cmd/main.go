@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/lamprosfasoulas/docs/pkg/cache"
-	"github.com/lamprosfasoulas/docs/pkg/web"
+	"github.com/lamprosfasoulas/skonaki/pkg/cache"
+	"github.com/lamprosfasoulas/skonaki/pkg/web"
 )
 
 

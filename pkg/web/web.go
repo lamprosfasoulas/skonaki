@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lamprosfasoulas/docs/pkg/files"
+	"github.com/lamprosfasoulas/skonaki/pkg/files"
 )
 func isTerminal(userAgent string) bool{
     progs := []string{"curl","wget","HTTPie","fetch"}

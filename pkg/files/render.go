@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/lamprosfasoulas/docs/pkg/cache"
+	"github.com/lamprosfasoulas/skonaki/pkg/cache"
 )
 
 const ROOT = "data"
