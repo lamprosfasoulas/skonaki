@@ -1,0 +1,41 @@
+name: Release Docker Image
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY_IMAGE: demo_images/skonaki
+
+jobs:
+  build-and-push-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        # Example for Docker Hub; adjust for your custom registry
+        username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ secrets.CONTAINER_REGISTRY_PASSWD }}
+        registry: ${{ secrets.CONTAINER_REGISTRY }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Extract release tag
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY_IMAGE }}
+        
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.CONTAINER_REGISTRY }}/${{ env.REGISTRY_IMAGE }}:latest
+        labels: ${{ steps.meta.outputs.labels }}
