@@ -1,4 +1,4 @@
-name: Release Docker Image
+name: Manual Docker Image Push
 
 on:
   workflow_dispatch:
