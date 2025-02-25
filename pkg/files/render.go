@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/lamprosfasoulas/skonaki/pkg/cache"
 )
@@ -76,6 +77,10 @@ func GetContent(path []string) []byte{
         return resp
     }
 }
+type Item struct {
+    id  int
+    p   string
+}
 
 func inner(path []string) []byte {
     var lang string //used for bat syntax highlighting
@@ -105,14 +110,28 @@ func inner(path []string) []byte {
         showDir = path[0]
         path[0] = "_" + path[0]
     }
-    for _,dir := range DIRS{
-        filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
-        if output, err := os.ReadFile(filePath);err == nil {
-            tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
-            tempC += string(RunBat(&output,lang))
-            content += tempC + "\n"
-        }        
+    var wg sync.WaitGroup
+    ch := make(chan Item,len(DIRS))
+    for i,dir := range DIRS{
+        wg.Add(1)
+        go func(id int, dir string){
+            defer wg.Done()
+            var res Item
+            res.id = id
+            filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
+            if output, err := os.ReadFile(filePath);err == nil {
+                tempC := fmt.Sprintf("\n\033[33;1m%v:%v\033[0m\n",strings.Split(dir,".")[1],showDir)
+                tempC += string(RunBat(&output,lang))
+                res.p =  tempC + "\n"
+                ch <- res
+            }        
+        }(i,dir)
     }
+    go func(){
+        wg.Wait()
+        close(ch)
+    }()
+    // problem for tommorow (( order of the go routine output ))
 //   for _,dir := range DIRS{
 //       filePath := filepath.Join(ROOT,dir,filepath.Join(path...))
 //       if output, err := RunBat(filePath,lang);err == nil {
@@ -121,7 +140,15 @@ func inner(path []string) []byte {
 //           content += tempC + "\n"
 //       }        
 //   }
+    page := make([]string, len(DIRS))
+    for v := range ch{ //concat based on the index order
+        page[v.id] = v.p
+    }
+    for _, v := range page {
+        content += v
+    }
     if content == "" {
+        wg.Wait()
         return inner([]string{"404"})
     }
     return []byte(content)
