@@ -62,6 +62,23 @@ The request form must include a **path** and **content** field.
 When an api call is performed the app creates a files inside the folder `11.internal`, uses the form
 **path** as path, and writes the **content** inside the file. If you give the name of a file that exists, the file will be overwritten.
 
+### API Usage
+
+To use the API you can do a post request like so:
+```bash
+file_path="path/to/your/file"
+file_contents=$(<$file_path)
+url="example.com/:api"
+path="file" # this means curl example.com/file will show you this file
+
+curl -X POST "$url" \
+     -d "path=$path" \
+     -d "content=$file_contents"
+```
+
+****Keep in mind that the API currently does not support authentication.***
+
+
 ## Config
 
 There is a config folder inside `data/` there you can put files like 404 error and home.

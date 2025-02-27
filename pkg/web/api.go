@@ -15,6 +15,15 @@ type newFile struct {
 func HandleAPI(w http.ResponseWriter, r *http.Request){
     // Write the api 
     if r.Method == http.MethodPost{
+        if r.FormValue("path") == "" {
+            http.Error(w, "Path field is required", http.StatusTeapot)
+            return
+        }
+        if r.FormValue("content") == "" {
+            http.Error(w, "Content field is required", http.StatusTeapot)
+            return
+        }
+
         var file newFile
         path := strings.Split(r.FormValue("path"),"/")
         if len(path) > 1 {
