@@ -11,8 +11,10 @@
 #
 # Usage 
 
-## curl skonaki.it.auth.gr/{command or language}
+## curl {{ .Domain }}/{command or language}
 
-## try skonaki.it.auth.gr/curl
+## try {{ .Domain }}/curl
 
-## for new suggestions visit skonaki.it.auth.gr/:suggest
+## for new suggestions visit {{ .Domain }}/:suggest
+
+## for a list of all sheets visit {{ .Domain }}/:list

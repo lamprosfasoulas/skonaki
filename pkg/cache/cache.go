@@ -15,11 +15,11 @@ var (
 )
 
 func InitRedis(){
-    redisAddr := os.Getenv("REDIS_ADDR")
+    redisAddr := os.Getenv("SKON_REDIS_ADDR")
     if redisAddr == "" {
         redisAddr = "localhost:6379"
     }
-    redisPasswd := os.Getenv("REDIS_PASSWD")
+    redisPasswd := os.Getenv("SKON_REDIS_PASSWD")
     if redisPasswd == "" {
         redisPasswd = ""
     }

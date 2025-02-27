@@ -62,7 +62,7 @@ func getList() string{
             if len(dispPath) > 1 {
                 dispPath[0] = strings.Split(dispPath[0],"_")[1]
             }
-            contList += fmt.Sprintf("curl skonaki.it.auth.gr/%v\n",filepath.Join(dispPath...))
+            contList += fmt.Sprintf("curl %v/%v\n",Domain,filepath.Join(dispPath...))
         }
         return nil
     })
@@ -106,6 +106,6 @@ func writeSug(p string, c *string) {
 		return
 	}
 
-	log.Println("File written successfully")
+	log.Printf("File %v written successfully",p)
     }
 }

@@ -1,3 +1,78 @@
+# Skonaki
+
+Skonaki is a cheatsheet api written in go. It uses community based libraries that you can see bellow.
+
+## How to use
+
+Skonaki can be used either with curl or with a browser.
+Type `curl example.com/{ query }` and you will see the results.
+For the brower version you can either type the URL or use the integrated form that uses HTMX.
+
+Type `curl example.com/{ query }/{ specific_topic }` for more specific things.
+
+Type `curl example.com/:list` to get the list of all the available cheat sheets.
+
+## How to Host
+
+Skonaki can be hosted with Docker Compose or you can compile the source code yourself.
+
+## How it works 
+
+All the cheat sheets are stored under the `data/` folder. The numbers in front of the folders is used 
+for the display order.
+
+The app uses some env variables. Those are:
+
+| ENV VAR | Value| USE |
+| :---: | :---: |:---:|
+|SKON_REDIS_ADDR |**Default:** `localhost:6379` | Redis Cache Server Address|
+|SKON_REDIS_PASSWD|**Default:** `empty` | Redis Cache Server Password|
+|SKON_ALLOW_API|`true` or `false` or `empty` | Enables the file update API|
+|SKON_ALLOW_SUGGEST|`true` or `false` or `empty`|Enables the suggestions form|
+|SKON_DOMAIN |**Default**: localhost:42069  | The domain that will be displayed to the user|
+
+****empty is the same as false***
+
+## Redis
+
+The app uses a simple redis instance to store the results as a byte array. The cached data
+have a KeepTTL of 5 hours. Up until now there is not cache invalidation. It just expires after 5 hours.
+
+## Suggestion form
+
+By setting the env variable to **true** (this is text) you enable the `example.com/:suggest` endpoint where you can make new suggestions.
+The page has two inputs, one is for the query and one if for the result body. 
+
+If for example you want to suggest `example.com/thislink` then you would type `thislink` in the input and whatever you want in the body. Keep in mind that 
+the text will get syntax highlighting. ( The default language is bash ). So mind the syntax of you suggestion.
+
+If you want to suggest `example.com/thislink/sublink` you have to type ` thislink/sublink` in the form input.
+
+The app looks for the requested query in every folder under `data/`, if it finds a matching file, it returns it otherwise it ignores it. For 
+queries like this `example.com/thislink/sublink` the app look for `_thislink/sublink` in each folder inside `data/`
+
+The suggested files are saved in the `suggestions` directory.
+
+## API 
+
+By setting the env variable to **true** (yes text) you enable the `example.com/:api` endpoint. There you can perform POST requests. 
+
+The request form must include a **path** and **content** field.
+
+When an api call is performed the app creates a files inside the folder `11.internal`, uses the form
+**path** as path, and writes the **content** inside the file. If you give the name of a file that exists, the file will be overwritten.
+
+## Config
+
+There is a config folder inside `data/` there you can put files like 404 error and home.
+
+## Sidenote 
+
+This app uses template to render both the terminal and the html responses so the domain for example
+is set this way.
+
+---
+
 ## Project sources
 | Repository | Link |
 | ----------  | ---- |

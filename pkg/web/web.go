@@ -1,11 +1,11 @@
 package web
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"strings"
+	textplate "text/template"
 	"time"
 
 	"github.com/lamprosfasoulas/skonaki/pkg/files"
@@ -41,10 +41,14 @@ func HandleFunc(w http.ResponseWriter, r *http.Request){
         path := strings.Split(strings.TrimPrefix(r.URL.Path,"/"), "/")
         start := time.Now()
         response := files.GetContent(path)
-        log.Printf("Terminal request %v with response time: %v\n",path,time.Since(start))
         w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-        w.Write(*response)
+        if tmpl,e := textplate.New("example").Parse(string(*response));e != nil {
+            w.Write(*response)
+        }else{
+            tmpl.Execute(w,p)
+        }
         //return response, "text/plain; charset=utf-8"
+        log.Printf("Terminal request %v with response time: %v\n",path,time.Since(start))
     }else{
         //return for browsers
         tmpl, _ := template.ParseFiles("html/index.html")
@@ -57,7 +61,6 @@ func HandleFunc(w http.ResponseWriter, r *http.Request){
         //var response bytes.Buffer
         //response = files.GetHTML(outBat)
         p.Content = template.HTML(files.GetHTML(files.GetContent(path)))
-        fmt.Printf("%v",p.Content)
         w.Header().Set("Content-Type", "text/html; charset=utf-8")
         tmpl.Execute(w,p)
         log.Printf("HTML request %v  with response time: %v\n",path,time.Since(start))

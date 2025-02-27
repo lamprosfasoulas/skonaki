@@ -73,7 +73,7 @@ func GetContent(path []string) *[]byte{
     }else{
         log.Printf("Searching %v ...",path)
         resp := inner(path)
-        //cache.SetCont(key, resp)
+        cache.SetCont(key, resp)
         return &resp
     }
 }
