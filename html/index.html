@@ -9,9 +9,14 @@
     </head>
     <body style="color:white; background-color:black">
         <form id="form"  hx-get="/" hx-target="#pr" hx-trigger="submit">
-            <label>$ curl skonaki.it.auth.gr/</label>
+            <label>$ curl {{ .Domain }}/</label>
             <input name="path" style="color: inherit; border: none; background-color: transparent;" autofocus="" id="path" value=""/>
         </form>
-        <pre hx-swap-oob="true" id="pr">{{ . }}</pre>
+            {{ block "pre" .Content }}
+            {{ end }}
     </body>
 </html>
+
+{{ define "pre" }}
+<pre hx-swap-oob="true" id="pr">{{ . }}</pre>
+{{ end }}

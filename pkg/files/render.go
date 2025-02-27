@@ -65,16 +65,16 @@ func GetHTML(c *[]byte) []byte {
     return []byte{}
 }
 
-func GetContent(path []string) []byte{
+func GetContent(path []string) *[]byte{
     key := filepath.Join(path...)
     if c, e := cache.GetCont(key); e == nil && c != nil{
         log.Printf("Getting key: %v from Cache",key)
-        return c
+        return &c
     }else{
         log.Printf("Searching %v ...",path)
         resp := inner(path)
-        cache.SetCont(key, resp)
-        return resp
+        //cache.SetCont(key, resp)
+        return &resp
     }
 }
 type Item struct {
