@@ -7,11 +7,11 @@ services:
     depends_on:
       - redis
     environment:
-    - SKON_REDIS_ADDR="redis_db:6379"
-    - SKON_REDIS_PASSWD=""
-    - SKON_ALLOW_API="true"
-    - SKON_ALLOW_SUGGEST="true"
-    - SKON_DOMAIN=""
+    - SKON_REDIS_ADDR=redis:6379
+    - SKON_REDIS_PASSWD=
+    - SKON_ALLOW_API=true
+    - SKON_ALLOW_SUGGEST=true
+    - SKON_DOMAIN=
     volumes:
       - ./sample:/app/data/11.sample
     restart: unless-stopped

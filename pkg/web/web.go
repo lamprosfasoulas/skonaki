@@ -1,7 +1,9 @@
 package web
 
 import (
+	"bytes"
 	"html/template"
+    textplate "text/template"
 	"log"
 	"net/http"
 	"strings"
@@ -41,7 +43,7 @@ func HandleFunc(w http.ResponseWriter, r *http.Request){
         start := time.Now()
         response := files.GetContent(path)
         w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-        if tmpl,e := template.New("example").Parse(string(*response));e != nil {
+        if tmpl,e := textplate.New("example").Parse(string(*response));e != nil {
             w.Write(*response)
         }else{
             tmpl.Execute(w,p)
@@ -56,10 +58,15 @@ func HandleFunc(w http.ResponseWriter, r *http.Request){
             path = strings.Split(strings.TrimPrefix(r.URL.Path,"/"), "/")
         }
         start := time.Now()
-        //outBat := files.GetContent(path)
-        //var response bytes.Buffer
-        //response = files.GetHTML(outBat)
-        p.Content = template.HTML(files.GetHTML(files.GetContent(path)))
+        response := files.GetContent(path)
+        if t,e := textplate.New("stageOne").Parse(string(*response));e != nil {
+            p.Content = template.HTML(files.GetHTML(response))
+        }else{
+            var stageOne bytes.Buffer
+            t.Execute(&stageOne,p)
+            stageTwo := stageOne.Bytes()
+            p.Content = template.HTML(files.GetHTML(&stageTwo))
+        }
         w.Header().Set("Content-Type", "text/html; charset=utf-8")
         tmpl.Execute(w,p)
         log.Printf("HTML request %v  with response time: %v\n",path,time.Since(start))

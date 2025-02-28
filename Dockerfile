@@ -14,9 +14,13 @@ FROM alpine:latest
 
 RUN apk add --no-cache bat aha
 
+RUN addgroup -S skon && adduser -S skon -G skon
+
+USER skon
+
 WORKDIR /app
 
-COPY --from=builder /app .
+COPY --chown=skon:skon --from=builder /app /app
 
 EXPOSE 42069
 
