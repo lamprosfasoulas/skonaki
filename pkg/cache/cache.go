@@ -52,3 +52,13 @@ func SetCont(key string, c []byte) error {
     log.Printf("Storing key: %v into the Cache",key)
     return redisClient.Set(ctx, key, c, 5*time.Hour).Err()
 }
+
+func Flush() error{
+    if r, e := redisClient.FlushAll(ctx).Result(); e!=nil{
+        log.Printf("Error flushing redis: %v", e)
+        return e
+    }else{
+        log.Printf("Redis flushed successfully :) -> %v",r)
+        return nil
+    }
+}

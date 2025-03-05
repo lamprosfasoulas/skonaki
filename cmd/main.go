@@ -40,7 +40,8 @@ func main() {
         http.HandleFunc("/:suggest", web.HandleSug)
     }
     if os.Getenv("SKON_ALLOW_API") == "true" {
-        http.HandleFunc("/:api", web.HandleAPI)
+        http.HandleFunc("POST /:api", web.HandleAPI)
+        http.HandleFunc("POST /:flush", web.HandleFlush)
     }
 	port := "42069"
 	fmt.Printf("Starting server on port %s...\n", port)
