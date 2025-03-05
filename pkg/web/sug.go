@@ -73,8 +73,10 @@ func getList() string{
 }
 
 func getSug(p string) ([]byte, error){
-    p = "_" + p
-    fmt.Println("this is get Sup",filepath.Join("suggestions",p))
+    if len(strings.Split(p, "/")) > 1{
+        p = "_" + p
+    }
+    //fmt.Println("this is get Sup",filepath.Join("suggestions",p))
     content, err := os.ReadFile(filepath.Join("suggestions",p))
     if err != nil {
         log.Printf("Error reading file: %v",err)
