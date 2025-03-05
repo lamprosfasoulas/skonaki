@@ -14,7 +14,7 @@ FROM alpine:latest
 
 RUN apk add --no-cache bat aha
 
-RUN addgroup -S skon && adduser -S skon -G skon
+RUN addgroup -S -g 1500 skon && adduser -S -u 1500 skon -G skon
 
 USER skon
 
